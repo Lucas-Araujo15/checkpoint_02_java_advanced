@@ -2,13 +2,14 @@ package com.api.courseManagement.models;
 
 import com.api.courseManagement.controllers.dtos.RegisterCourseDTO;
 import com.api.courseManagement.controllers.dtos.UpdateCourseDTO;
+import com.api.courseManagement.exceptions.CourseFullException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -26,10 +27,10 @@ public class Course {
     private String description;
 
     @Column(name = "start_date")
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date")
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     @Column(name = "registration_limit")
     private int registrationLimit;
@@ -58,6 +59,7 @@ public class Course {
         this.startDate = courseDTO.startDate();
         this.endDate = courseDTO.endDate();
         this.subjectList = courseDTO.subjectList().stream().map(Subject::new).toList();
+        this.registrationLimit = courseDTO.registrationLimit();
     }
 
     public void updateInformation(UpdateCourseDTO updateCourseDTO) {
@@ -68,5 +70,17 @@ public class Course {
         if (updateCourseDTO.description() != null) {
             this.description = updateCourseDTO.description();
         }
+    }
+
+    public void addRegistration() throws CourseFullException {
+        if (this.registrationLimit == this.numberOfRegistrations) {
+            throw new CourseFullException("O limite de inscrições já foi atingido!");
+        }
+
+        this.numberOfRegistrations += 1;
+    }
+
+    public void removeRegistration() {
+        this.numberOfRegistrations -= 1;
     }
 }

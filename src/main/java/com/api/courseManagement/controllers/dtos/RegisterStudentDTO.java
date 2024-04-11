@@ -1,9 +1,12 @@
 package com.api.courseManagement.controllers.dtos;
 
+import com.api.courseManagement.enums.Country;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public record RegisterStudentDTO(
         @NotBlank
@@ -18,19 +21,19 @@ public record RegisterStudentDTO(
         @CPF
         String cpf,
 
-        @NotBlank
-        String country,
+        @NotNull
+        Country country,
 
         @NotNull
         Boolean bilingual,
 
         @PastOrPresent
-        LocalDateTime startDateInTechnology,
+        LocalDate startDateInTechnology,
 
         @PastOrPresent
-        LocalDateTime graduationCompletionDate,
+        LocalDate graduationCompletionDate,
 
         @Past
-        LocalDateTime dateOfBirth
+        LocalDate dateOfBirth
 ) {
 }

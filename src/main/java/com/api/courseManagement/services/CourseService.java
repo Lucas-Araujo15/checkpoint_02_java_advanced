@@ -4,6 +4,7 @@ import com.api.courseManagement.controllers.dtos.CourseDTO;
 import com.api.courseManagement.controllers.dtos.DetailedCourseDTO;
 import com.api.courseManagement.controllers.dtos.RegisterCourseDTO;
 import com.api.courseManagement.controllers.dtos.UpdateCourseDTO;
+import com.api.courseManagement.exceptions.CourseFullException;
 import com.api.courseManagement.models.Course;
 import com.api.courseManagement.repositories.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,15 @@ public class CourseService {
 
     public Page<CourseDTO> list(Pageable pagination) {
         return courseRepository.findAll(pagination).map(CourseDTO::new);
+    }
+
+    public void addRegistration(Course course) throws CourseFullException {
+        course.addRegistration();
+        courseRepository.save(course);
+    }
+
+    public void removeRegistration(Course course) {
+        course.removeRegistration();
+        courseRepository.save(course);
     }
 }

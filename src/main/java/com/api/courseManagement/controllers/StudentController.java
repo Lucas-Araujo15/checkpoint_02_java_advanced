@@ -1,8 +1,8 @@
 package com.api.courseManagement.controllers;
 
 import com.api.courseManagement.controllers.dtos.*;
+import com.api.courseManagement.exceptions.*;
 import com.api.courseManagement.models.Student;
-import com.api.courseManagement.models.Teacher;
 import com.api.courseManagement.services.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -15,7 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/api/student")
 public class StudentController {
     private final StudentService studentService;
 
@@ -24,7 +24,7 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody @Valid RegisterStudentDTO registerStudentDTO, UriComponentsBuilder uriBuilder)  {
+    public ResponseEntity<?> create(@RequestBody @Valid RegisterStudentDTO registerStudentDTO, UriComponentsBuilder uriBuilder) throws InvalidCpfException, UnderAgeException, FiveYearsGraduationException, InsufficientExperienceException, NotBilingualException, InvalidLocationException {
         Student student = studentService.create(registerStudentDTO);
 
         URI uri = uriBuilder.path("/student/{id}").buildAndExpand(student.getId()).toUri();
@@ -33,7 +33,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DetailedStudentDTO> get(@PathVariable("id") Long id) {
+    public ResponseEntity<DetailedStudentDTO> find(@PathVariable("id") Long id) {
         DetailedStudentDTO detailedStudentDTO = studentService.get(id);
         return ResponseEntity.ok(detailedStudentDTO);
     }

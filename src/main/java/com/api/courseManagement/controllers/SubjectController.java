@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/subject")
+@RequestMapping("/api/subject")
 public class SubjectController {
     private final SubjectService subjectService;
 

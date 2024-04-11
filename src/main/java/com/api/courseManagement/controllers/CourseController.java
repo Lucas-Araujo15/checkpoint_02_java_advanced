@@ -11,14 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
-@RequestMapping("/course")
+@RequestMapping("/api/course")
 public class CourseController {
     private final CourseService courseService;
 
@@ -42,8 +46,18 @@ public class CourseController {
         return ResponseEntity.ok(page);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DetailedCourseDTO> get(@PathVariable("id") Long id) {
+    @GetMapping("/hateoas")
+    public CollectionModel<EntityModel<CourseDTO>> findAllCoursesHateoas(@PageableDefault(size = 10, page = 0) Pageable pagination) {
+        List<EntityModel<CourseDTO>> courses = courseService.list(pagination).stream()
+                .map(course -> EntityModel.of(course,
+                        linkTo(methodOn(CourseController.class).find(course.id())).withSelfRel()))
+                .toList();
+
+        return CollectionModel.of(courses, linkTo(methodOn(CourseController.class).list(null)).withSelfRel());
+    }
+
+    @GetMapping("/detailed/{id}")
+    public ResponseEntity<DetailedCourseDTO> find(@PathVariable("id") Long id) {
         DetailedCourseDTO detailedCourseDTO = courseService.get(id);
         return ResponseEntity.ok(detailedCourseDTO);
     }

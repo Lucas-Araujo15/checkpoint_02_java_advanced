@@ -6,12 +6,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
 
 public record DetailedRegistrationDTO(
-        @JsonIgnoreProperties({"inscriptionList"})
-        DetailedStudentDTO student,
+        String studentName,
+
+        String courseName,
 
         LocalDateTime registrationDate
 ) {
     public DetailedRegistrationDTO(Registration registration) {
-        this(new DetailedStudentDTO(registration.getStudent()), registration.getRegistrationDate());
+        this(registration.getStudent().getName(), registration.getCourse().getName(), registration.getRegistrationDate());
     }
 }

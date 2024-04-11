@@ -5,22 +5,25 @@ import com.api.courseManagement.models.Registration;
 import com.api.courseManagement.models.Teacher;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record DetailedCourseDTO(
         String name,
         String description,
-        LocalDateTime startDate,
-        LocalDateTime endDate,
+        LocalDate startDate,
+        LocalDate endDate,
+
+        @JsonIgnoreProperties({"courseList", "id"})
         List<Teacher> teacherList,
 
-        @JsonIgnoreProperties({"id", "course"})
-        List<Registration> registrationList,
+        @JsonIgnoreProperties({"courseName"})
+        List<DetailedRegistrationDTO> registrationList,
         List<DetailedSubjectDTO> subjectList
 
 ) {
     public DetailedCourseDTO(Course course) {
-        this(course.getName(), course.getDescription(), course.getStartDate(), course.getEndDate(), course.getTeacherList(), course.getRegistrationList(), course.getSubjectList().stream().map(DetailedSubjectDTO::new).toList());
+        this(course.getName(), course.getDescription(), course.getStartDate(), course.getEndDate(), course.getTeacherList(), course.getRegistrationList().stream().map(DetailedRegistrationDTO::new).toList(), course.getSubjectList().stream().map(DetailedSubjectDTO::new).toList());
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/teacher")
+@RequestMapping("/api/teacher")
 public class TeacherController {
     private final TeacherService teacherService;
 
@@ -41,7 +41,7 @@ public class TeacherController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DetailedTeacherDTO> get(@PathVariable("id") Long id) {
+    public ResponseEntity<DetailedTeacherDTO> find(@PathVariable("id") Long id) {
         DetailedTeacherDTO detailedTeacherDTO = teacherService.get(id);
         return ResponseEntity.ok(detailedTeacherDTO);
     }
@@ -56,5 +56,11 @@ public class TeacherController {
     public ResponseEntity<DetailedTeacherDTO> update(@PathVariable("id") Long id, @RequestBody UpdateTeacherDTO updateTeacherDTO) {
         DetailedTeacherDTO detailedTeacherDTO = teacherService.update(id, updateTeacherDTO);
         return ResponseEntity.ok(detailedTeacherDTO);
+    }
+
+    @GetMapping("/course/{id}")
+    public ResponseEntity<Page<DetailedTeacherDTO>> findByCourse(@PageableDefault(size = 10, page = 0) Pageable pagination) {
+        Page<DetailedTeacherDTO> page = teacherService.list(pagination);
+        return ResponseEntity.ok(page);
     }
 }
