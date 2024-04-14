@@ -8,6 +8,8 @@ import com.api.courseManagement.models.Student;
 import com.api.courseManagement.repositories.RegistrationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RegistrationService {
@@ -32,6 +34,7 @@ public class RegistrationService {
         registrationRepository.delete(registration);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public Registration create(RegisterRegistrationDTO registerRegistrationDTO) throws CourseFullException {
         Registration registration = new Registration();
 
